@@ -1,0 +1,67 @@
+#include <string.h>
+#include <stdio.h> 
+#include <stdlib.h>
+#include <math.h>
+
+#define M 9 //El nombre de cossos que simularem sera 9, des del Sol fins a Nept�
+
+int main(){
+
+int i, j, k;
+double dt, T_nep;
+
+double x[N][M], y[N][M], v_x[N][M], v_y[N][M], m[M], x_2[N][M], x_3[N][M], x_4[N][M], y_2[N][M], y_3[N][M], y_4[N][M]; 
+double k1_x[M], k2_x[M], k3_x[M], k4_x[M], k1_y[M], k2_y[M], k3_y[M], k4_y[M];
+double l1_x[M], l2_x[M], l3_x[M], l4_x[M], l1_y[M], l2_y[M], l3_y[M], l4_y[M];
+double l1_x_old[M], l2_x_old[M], l3_x_old[M], l4_x_old[M], l1_y_old[M], l2_y_old[M], l3_y_old[M], l4_y_old[M];
+double l1_x_new[M], l2_x_new[M], l3_x_new[M], l4_x_new[M], l1_y_new[M], l2_y_new[M], l3_y_new[M], l4_y_new[M];
+
+
+//Aqu� fiquem totes les constants que necessitem per al problema
+
+dt=0.0000166 //el pas de temps corresponent a un dia terrestre
+T_nep=1 // periode orbital de Nept� normalitzat
+x[0][M]={} //posici� inicial en l'eix x
+y[0][M]={} //posici� inicial en l'eix y, suposarem que el sol esta centrat en (0,0) i la resta de planetes estan alineats verticalment
+v_x[0][M]={} //velocitat inicial en l'eix x
+v_y[0][M]={} //velocitat inicial en l'eix y
+
+/*Definirem la funci� de l'acceleraci�, ja que es una funci� que invoca molts par�metres i executar-la en cada proc�s del RK-4 pot ser molt
+cost�s tant per a l'ordinador com per a nosaltres */
+
+double a()
+
+
+//Codi per a RK4
+
+for(i=0; i<T_nep; i++){
+	for (j=0; j<9; j++){
+		k1_x[j]=v[i][j];
+		k1_y[j]=v[i][j];
+		
+		for (k=0; k<9; k++){
+			if (k==j){
+			}
+			else{
+				l1_x_old[k]=(m[k]*fabs(x[i][j]-x[i][k]))/(pow((pow(x[i][j]-x[i][k], 2)+ pow(y[i][j]-y[i][k], 2)), 1.5));
+				l1_y_old[k]=(m[k]*fabs(y[i][j]-y[i][k]))/(pow((pow(x[i][j]-x[i][k], 2)+ pow(y[i][j]-y[i][k], 2)), 1.5));
+				
+				if (k==0){
+					l1_x[k]=l1_x_old[k];
+					l1_y[k]=l1_x_old[k];
+				}
+				else{
+					l1_x[k]=l1_x[k-1] + l1_x_old[k];
+					l1_y[k]=l1_y[k-1] + l1_x_old[k];
+				}
+				
+			}
+		}
+		
+		x_2[i][j]=x[i][j] + 0.5*dt*k1_x[j]
+		
+		
+	}
+}
+
+}
