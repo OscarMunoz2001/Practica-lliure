@@ -17,22 +17,13 @@ double Temp_1(double R_s, double T_s, double d_s){
 	return pow((0.9*pow(R_s, 2)*pow(T_s, 4))/(4*d_s*d_s), 0.25);
 }
 
+double Temp_2(double R_s, double T_s, double x_t, double x_s, double y_t, double y_s){
+	return pow((0.9*pow(R_s, 2)*pow(T_s, 4))/(4*(pow(x_t-x_s, 2)+pow(y_t-y_s, 2))), 0.25);
+}
+
 
 int main(){
 	
-double k1_x[M], k2_x[M], k3_x[M], k4_x[M], l1_x[M], l2_x[M], l3_x[M], l4_x[M], k1_y[M], k2_y[M], k3_y[M], k4_y[M], l1_y[M], l2_y[M], l3_y[M], l4_y[M];
-double x_1[M], y_1[M], v_x_1[M], v_y_1[M], x_2[M], y_2[M], v_x_2[M], v_y_2[M],x_3[M], y_3[M], v_x_3[M], v_y_3[M]; 
-double En[M], En_i[M], E_tot[M];
-double T_est[5]={1, 2.1666667, 1.058333333, 0.595, 1.0768333};
-double R_est[5]={0.000155556, 0.00000155556, 0.00032666667, 0.00004557777, 0.0000124444};
-double m[M]={39.21390206, 0.00000649604, 0.00009565815, 0.0001184339, 0.0000126752, 0.03762950198, 0.01184339062, 0.00171709359, 0.0020795251};
-double T[M]={0.0,0.001461538, 0.0037307692, 0.006076923, 0.0114230769, 0.071923076, 0.178846153, 0.51153846, 1.0};
-double T_2[M], T_3[M], T_4[M];
-double x[M]={0.0, 0.012867, 0.024, 0.03311, 0.05067, 0.17289, 0.3178, 0.6378, 1};
-double y[M]={0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-double v_x[M]={0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-double v_y[M]={0.0,2*M_PI*x[1]/T[1],2*M_PI*x[2]/T[2],2*M_PI*x[3]/T[3],2*M_PI*x[4]/T[4],2*M_PI*x[5]/T[5],2*M_PI*x[6]/T[6],2*M_PI*x[7]/T[7],2*M_PI*x[8]};
-
 int i, j, k, N, l;
 double T_nep, dt, dr, a_x, a_y, v, K, v_i, K_i, s_E_tot, H_s, H_a, H_k, H_p;
 
@@ -40,6 +31,19 @@ dt=0.000016615384; //el pas de temps més petit que podem agafar sense que el met
 T_nep=1; // periode orbital de Neptú normalitzat
 N = T_nep/dt;
 dr=0.000153846; 
+	
+double k1_x[M], k2_x[M], k3_x[M], k4_x[M], l1_x[M], l2_x[M], l3_x[M], l4_x[M], k1_y[M], k2_y[M], k3_y[M], k4_y[M], l1_y[M], l2_y[M], l3_y[M], l4_y[M];
+double x_1[M], y_1[M], v_x_1[M], v_y_1[M], x_2[M], y_2[M], v_x_2[M], v_y_2[M],x_3[M], y_3[M], v_x_3[M], v_y_3[M]; 
+double En[M], En_i[M], E_tot[M];
+double T_est[5]={1, 2.1666667, 1.058333333, 0.595, 1.0768333};
+double R_est[5]={0.000155556, 0.00000155556, 0.00032666667, 0.00004557777, 0.0000124444};
+double m[M]={39.21390206, 0.00000649604, 0.00009565815, 0.0001184339, 0.0000126752, 85*0.03762950198, 0.01184339062, 0.00171709359, 0.0020795251}; //jupiter 2 = 0.081 Ms =85*M_jup
+double T[M]={0.0,0.001461538, 0.0037307692, 0.006076923, 0.0114230769, 0.071923076, 0.178846153, 0.51153846, 1.0};
+double T_2[M], T_3[M], T_4[M], T_s[N], T_e[N], T_tot[N];
+double x[M]={0.0, 0.012867, 0.024, 0.03311, 0.05067, 0.17289, 0.3178, 0.6378, 1};
+double y[M]={0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+double v_x[M]={0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+double v_y[M]={0.0,2*M_PI*x[1]/T[1],2*M_PI*x[2]/T[2],2*M_PI*x[3]/T[3],2*M_PI*x[4]/T[4],2*M_PI*x[5]/T[5],2*M_PI*x[6]/T[6],2*M_PI*x[7]/T[7],2*M_PI*x[8]};
 
 for (j=0; j<M; j++){
 	T_2[j]=T[j]*pow(1/0.63, 0.5); //AE Aquarii A
@@ -79,6 +83,7 @@ for(j=0; j<M; j++){
 	//printf("%lf\n", En_i[j]);
 }
 
+//Runge-Kutta 
 
 for(i=1; i<N; i++){
     for(j=0; j<M; j++){
@@ -177,7 +182,7 @@ for(i=1; i<N; i++){
     v_x[j]+=(dt/6)*(l1_x[j]+2.0*l2_x[j]+2.0*l3_x[j]+l4_x[j]);
     v_y[j]+=(dt/6)*(l1_y[j]+2.0*l2_y[j]+2.0*l3_y[j]+l4_y[j]);
     		}
-			printf("%lf \t %lf \t %lf \t %lf \n", x[8], y[8], v_x[8], v_y[8]);
+			//printf("%lf \t %lf \t %lf \t %lf \n", x[8], y[8], v_x[8], v_y[8]);
 
 
 	for(j=0; j<M; j++){
@@ -203,7 +208,14 @@ for(i=1; i<N; i++){
 	//printf("%lf \t %lf\n", s_E_tot, v);
 	s_E_tot=0;
 
+	T_s[i]=Temp_2(R_est[0], T_est[0], x[3], x[0], y[3], y[0]);
+	T_e[i]=Temp_2(R_est[4], T_est[4], x[3], x[5], y[3], y[5]);
+	T_tot[i]=T_s[i]+T_e[i];
+	
+	printf("%lf \t %lf \t %lf\n", T_tot[i]*6000, x[3], y[3]);
 	}
+	
+
 
 	return 0;
 	
